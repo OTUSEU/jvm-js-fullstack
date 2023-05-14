@@ -14,14 +14,23 @@ import io.ktor.server.routing.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.cors.routing.*
 import org.litote.kmongo.reactivestreams.KMongo
+import storage.MapStorage
 
-val connectionString: ConnectionString? = System.getenv("MONGODB_URI")?.let {
-    ConnectionString("$it?retryWrites=false")
-}
-
-val client = if (connectionString != null) KMongo.createClient(connectionString).coroutine else KMongo.createClient().coroutine
-val database = client.getDatabase(connectionString?.database ?: "test")
-val collection = database.getCollection<ShoppingListItem>()
+/**
+ * lesson4 немножко подменили сервер
+ * при запуске у меня
+ * Не удается открыть эту страницу
+ * Похоже, веб-страница по адресу http://0.0.0.0:9090/ содержит ошибки
+ * или окончательно перемещена на новый веб-адрес.
+ */
+//val connectionString: ConnectionString? = System.getenv("MONGODB_URI")?.let {
+//    ConnectionString("$it?retryWrites=false")
+//}
+//
+//val client = if (connectionString != null) KMongo.createClient(connectionString).coroutine else KMongo.createClient().coroutine
+//val database = client.getDatabase(connectionString?.database ?: "test")
+//val collection = database.getCollection<ShoppingListItem>()
+val collection = MapStorage()
 
 fun main() {
     val port = System.getenv("PORT")?.toInt() ?: 9090
@@ -52,15 +61,18 @@ fun main() {
             }
             route(ShoppingListItem.path) {
                 get {
-                    call.respond(collection.find().toList())
+                   //call.respond(collection.find().toList())
+                    call.respond(collection.getAll())
                 }
                 post {
-                    collection.insertOne(call.receive<ShoppingListItem>())
+                    //collection.insertOne(call.receive<ShoppingListItem>())
+                    collection.insert(call.receive<ShoppingListItem>())
                     call.respond(HttpStatusCode.OK)
                 }
                 delete("/{id}") {
                     val id = call.parameters["id"]?.toInt() ?: error("Invalid delete request")
-                    collection.deleteOne(ShoppingListItem::id eq id)
+                    //collection.deleteOne(ShoppingListItem::id eq id)
+                    collection.delete(id)
                     call.respond(HttpStatusCode.OK)
                 }
             }

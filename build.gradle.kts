@@ -1,16 +1,18 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
-
-val kotlinVersion = "1.7.20-Beta"
-val serializationVersion = "1.3.3"
-val ktorVersion = "2.0.3"
-val logbackVersion = "1.2.11"
-val kotlinWrappersVersion = "1.0.0-pre.354"
-val kmongoVersion = "4.5.0"
+// https://kotlinlang.org/docs/multiplatform-full-stack-app.html#build-the-backend
+val kotlinVersion = "1.7.22" //"1.7.20-Beta"
+val serializationVersion = "1.3.3" // "1.5.1"
+val ktorVersion =  "2.0.3" // "2.3.0"
+val logbackVersion = "1.4.7"  //"1.2.11"
+val kotlinWrappersVersion =  "1.0.0-pre.354" // "1.0.0-pre.548"
+val kmongoVersion = "4.9.0" //"4.5.0"
 
 plugins {
-    kotlin("multiplatform") version "1.7.20-Beta"
+    kotlin("multiplatform") version "1.7.22"
     application //to run JVM part
-    kotlin("plugin.serialization") version "1.7.20-Beta"
+    jacoco
+    id("io.qameta.allure") version "2.11.2"
+    kotlin("plugin.serialization") version "1.7.22"
 }
 
 group = "org.example"
