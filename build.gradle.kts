@@ -70,7 +70,36 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom")
             }
         }
+
+// Сделала свой sourceSets в нем определили зависимости и таски
+// таски можно комбинировать между собой, писать собственные
+// можно разбить тесты на сьюты
+       val jvmTest by getting {
+           dependencies {
+               implementation(kotlin("test"))
+           }
+
+           tasks.withType<Test> {
+               useJUnitPlatform()
+               finalizedBy("jacocoTestReport", "allureReport")
+           }
+       }
     }
+}
+// после настройки jvmTest с tasks настраиваем плагины:
+allure {
+    report {
+        version.set("2.20.0")
+    }
+}
+// здесь настраиваем одну конкретную таску
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.dir("$buildDir/reports/coverage")
+    }
+    executionData.setFrom("$buildDir/jacoco/jvmTest.exec")
 }
 
 application {
